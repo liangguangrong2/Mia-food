@@ -1,0 +1,164 @@
+<template>
+	<div>
+		<div class="box_T">
+			<van-nav-bar
+				title="菜名列表"
+				left-text="返回"
+				left-arrow
+				@click-left="back"
+			/>
+
+			<div
+				class="next"
+				v-for="(item, index) in meen"
+				:key="index"
+				:item="item"
+				@click="Faature(item.r.id)"
+			>
+				<div class="box">
+					<img :src="item.r.img" alt="" />
+				</div>
+
+				<div class="boom">
+					<p class="nun">{{ item.r.n }}</p>
+					<p class="list">
+						<span>{{ item.r.rate }}分 -</span>
+						<span> {{ item.r.recommend_label }}</span>
+					</p>
+					<div class="item">
+						<p>
+							<img :src="item.r.a.p" alt />
+						</p>
+						<h4>
+							{{ item.r.an }}
+						</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+export default {
+	data() {
+		return {
+			// 菜谱详细内容id
+			meen: [],
+			major: [],
+			cook: [],
+			value: 1,
+			title: "",
+		};
+	},
+	// created() {
+	// 	// //截取id
+	// 	// this.id = this.$route.query.id;
+	// 	// console.log(this.id);
+	// 	// // 获取菜品详情数据
+	// 	console.log(this.$route.query.id);
+	// },
+	// mounted() {
+	// 	console.log(this.$route.query.title);
+	// },
+	created() {
+		this.title = this.$route.query.title;
+
+		this.GetMenulist();
+	},
+	methods: {
+		//返回上一级
+		back() {
+			this.$router.go(-1);
+		},
+
+		Faature(id) {
+			this.$router.push({
+				name: "Cookstep",
+				query: {
+					id,
+				},
+			});
+		},
+		GetMenulist() {
+			this.axios({
+				//请求类型
+				method: "GET",
+				url: "/recipe/list",
+				params: {
+					keyword: this.$route.query.title,
+				},
+			}).then((response) => {
+				console.log(response.data.result);
+				this.meen = response.data.result.list;
+				console.log(this.meen);
+			});
+		},
+	},
+};
+</script>
+
+<style lang="less">
+.box_T {
+	// border: 1px solid;
+	.next {
+		width: 100%;
+		height: 100%;
+		// border: 1px solid;
+		margin-top: 10px;
+		display: flex;
+		.box {
+			flex: 1;
+			// border: 1px solid;
+			img {
+				width: 170px;
+				height: 130px;
+				object-fit: cover;
+				border-radius: 5px;
+				margin-left: 10px;
+			}
+		}
+		.boom {
+			// border: 1px solid;
+			flex: 1;
+			position: relative;
+			.nun {
+				width: 85%;
+				position: absolute;
+				left: 8px;
+				font-size: 16px;
+				font-weight: 600;
+			}
+			.list {
+				font-size: 13px;
+				font-weight: bold;
+				margin-bottom: 6px;
+				// border: 1px solid;
+				margin-top: 63px;
+				span {
+					font-size: 12px;
+				}
+			}
+			.item {
+				display: flex;
+				align-items: center;
+				margin-left: 16px;
+
+				img {
+					width: 30px;
+					height: 30px;
+					border-radius: 50%;
+				}
+
+				h4 {
+					color: #0d0d0d;
+					font-weight: 400;
+					font-size: 12px;
+					margin: 0 8px;
+					letter-spacing: 1px;
+				}
+			}
+		}
+	}
+}
+</style>
